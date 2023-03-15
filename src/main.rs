@@ -1,3 +1,6 @@
+mod linux_parser;
+use crate::linux_parser::NCursesDisplay;
+
 fn main() {
-    println!("Hello, world!");
+    NCursesDisplay::display(10);
 }
