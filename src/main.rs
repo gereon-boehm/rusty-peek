@@ -1,6 +1,7 @@
 mod linux_parser;
 use crate::linux_parser::NCursesDisplay;
+use linux_parser::System;
 
 fn main() {
-    NCursesDisplay::display(10);
+    NCursesDisplay::display(System {}, 10);
 }
