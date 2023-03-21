@@ -1,6 +1,6 @@
 use ncurses::*;
-
-pub struct Process;
+use super::processes::Process;
+use super::processes::Format;
 
 pub struct System;
 
@@ -32,17 +32,15 @@ impl NCursesDisplay {
         attroff(color_pair);
         let num_processes = std::cmp::min(processes.len().try_into().unwrap(), n);
         for i in 0..num_processes {
-            mvwprintw(window, row + 1 + i, pid_column, "TODO: print pid");
-            mvwprintw(window, row + 1 + i, user_column, "TODO: print user");
-            mvwprintw(window, row + 1 + i, cpu_column, "TODO: print cpu usage");
-            mvwprintw(window, row + 1 + i, ram_column, "TODO: print ram comsumption");
-            mvwprintw(
-                window,
-                row + 1 + i,
-                time_column,
-                "TODO: print uptime",
-            );
-            mvwprintw(window, row + 1 + i, command_column, "TODO: print process command");
+            let idx = i as usize;
+            mvwprintw(window, row + 1 + i, pid_column, processes[idx].pid().to_string().as_str());
+            mvwprintw(window, row + 1 + i, user_column, processes[idx].user().as_str());
+            let cpu = processes[idx].cpu_utilization() * 100.0;
+            mvwprintw(window, row + 1 + i, cpu_column, format!("{:.2}", cpu).as_str());
+            mvwprintw(window, row + 1 + i, ram_column, processes[idx].ram().as_str());
+            let up_time = Format::elapsed_time(processes[idx].up_time());
+            mvwprintw(window, row + 1 + i, time_column, up_time.as_str());
+            mvwprintw(window, row + 1 + i, command_column, &processes[idx].command()[..(getmaxx(window) as usize - command_column as usize)]);
         }
     }
 
